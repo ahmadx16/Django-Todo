@@ -1,6 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from .models import Task
 
 
 def index(request):
-    return render(request, 'tasks/index.html')
+    all_tasks = Task.objects.all()
+    context = {
+        "all_tasks": all_tasks
+    }
+    return render(request, 'tasks/index.html',context)
