@@ -6,4 +6,3 @@ class Task(models.Model):
     """
     details = models.CharField(max_length=500),
     iscomplete = models.BooleanField(default=False)
-
