@@ -1,5 +1,5 @@
-{% comment %} Find this UI template at https://bbbootstrap.com/snippets/awesome-todo-list-template-25095891
-{% endcomment %}
+<!-- Find this UI template at https://bbbootstrap.com/snippets/awesome-todo-list-template-25095891 -->
+
 
 {% load static %}
 
@@ -20,8 +20,8 @@
                         <h4 class="card-title">Awesome Todo list</h4>
 
                         <form action="{% url 'tasks:index'%}" method="POST">
+                            {% csrf_token %}
                             <div class="add-items d-flex">
-                                {% csrf_token %}
                                 <input type="text" name="newtask" class="form-control todo-list-input"
                                     placeholder="What do you need to do today?">
                                 <input type="submit" value="Add"
@@ -30,18 +30,42 @@
                         </form>
 
                         <div class="list-wrapper">
-                            <ul class="d-flex flex-column-reverse todo-list">
-                                {% for task in all_tasks  %}
-                                <li {% if task.is_complete %}class="completed" {% endif %}>
-                                    <div class="form-check"> <label class="form-check-label">
-                                            <input class="checkbox" type="checkbox" {% if task.is_complete %}checked
-                                                {% endif %}>
-                                            {{task.detail}}
-                                            <i class="input-helper"></i></label> </div>
-                                    <i class="remove mdi mdi-close-circle-outline"></i>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                            <div class="container">
+                                <ul class="d-flex flex-column-reverse todo-list">
+                                    {% for task in all_tasks  %}
+                                    {% comment %} <li {% if task.is_complete %}class="completed" {% endif %}> {% endcomment %}
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <div class="form-check"> <label class="form-check-label">
+                                                        <a href="{% url 'tasks:toggle-task-complete' task.id %}">
+                                                            {% if task.is_complete %}
+                                                            <button class="btn btn-success round">
+                                                                <i class="fa fa-check"></i>
+                                                            </button>
+                                                            {% else %}
+                                                            <button class="btn btn-default round">
+                                                                <i class="fa fa-square-o"></i>
+                                                            </button>
+                                                            {% endif %}
+                                                            
+                                                        </a>
+                                                        {{task.detail}}
+                                                        <i class="input-helper"></i></label> </div>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <a href="{% url 'tasks:delete-task' task.id %}">
+                                                    <button class="btn btn-danger round">
+                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                    </button>
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    {% comment %} </li> {% endcomment %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -437,6 +437,11 @@ input[type="checkbox"] {
     flex-direction: column-reverse !important
 }
 
+.round {
+    
+    border-radius: 30%;
+}
+
 .d-flex,
 .loader-demo-box,
 .distribution-chart-legend .distribution-chart,
