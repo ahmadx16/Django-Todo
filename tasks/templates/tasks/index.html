@@ -1,16 +1,8 @@
 <!-- Find this UI template at https://bbbootstrap.com/snippets/awesome-todo-list-template-25095891 -->
+{% extends 'tasks/base.html' %}
 
 
-{% load static %}
-
-<link type="text/css" rel="stylesheet" href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
-<link type="text/css" rel="stylesheet"
-    href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
-<link rel="stylesheet" href="{% static 'tasks/style.css' %}">
-<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-
-
+{% block body %}
 <div class="page-content page-container" id="page-content">
     <div class="padding">
         <div class="row container d-flex justify-content-center">
@@ -33,36 +25,34 @@
                             <div class="container">
                                 <ul class="d-flex flex-column-reverse todo-list">
                                     {% for task in all_tasks  %}
-                                    {% comment %} <li {% if task.is_complete %}class="completed" {% endif %}> {% endcomment %}
-                                        <div class="row">
-                                            <div class="col-md-10">
-                                                <div class="form-check"> <label class="form-check-label">
-                                                        <a href="{% url 'tasks:toggle-task-complete' task.id %}">
-                                                            {% if task.is_complete %}
-                                                            <button class="btn btn-success round">
-                                                                <i class="fa fa-check"></i>
-                                                            </button>
-                                                            {% else %}
-                                                            <button class="btn btn-default round">
-                                                                <i class="fa fa-square-o"></i>
-                                                            </button>
-                                                            {% endif %}
-                                                            
-                                                        </a>
-                                                        {{task.detail}}
-                                                        <i class="input-helper"></i></label> </div>
-                                            </div>
 
-                                            <div class="col-md-2">
-                                                <a href="{% url 'tasks:delete-task' task.id %}">
-                                                    <button class="btn btn-danger round">
-                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                                    </button>
-                                                </a>
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="form-check"> <label class="form-check-label">
+                                                    <a href="{% url 'tasks:toggle-task-complete' task.id %}">
+                                                        {% if task.is_complete %}
+                                                        <button class="btn btn-success round">
+                                                            <i class="fa fa-check"></i>
+                                                        </button>
+                                                        {% else %}
+                                                        <button class="btn btn-default round">
+                                                            <i class="fa fa-square-o"></i>
+                                                        </button>
+                                                        {% endif %}
 
+                                                    </a>
+                                                    {{task.detail}}
+                                                    <i class="input-helper"></i></label> </div>
                                         </div>
-                                    {% comment %} </li> {% endcomment %}
+
+                                        <div class="col-md-2">
+                                            <a href="{% url 'tasks:delete-task' task.id %}">
+                                                <button class="btn btn-danger round">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -73,3 +63,4 @@
         </div>
     </div>
 </div>
+{% endblock body %}
