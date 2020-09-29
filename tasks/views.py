@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
 from .models import Task
 
 
@@ -12,41 +13,19 @@ def index(request):
 
     return render(request, 'tasks/index.html', context)
 
-
-def add(request):
-    """Adding new tasks"""
-
-    if request.method == 'POST':
-        task = Task(detail=request.POST['newtask'])
-        task.save()
-    return redirect("tasks:index")
-
-
-def delete_task(request, task_id):
-    """Delete task on given task_id"""
-
-    task = get_object_or_404(Task, id=task_id)
-    task.delete()
-    return redirect("tasks:index")
-
-
-def toggle_task(request, task_id):
+def toggle_task(request):
     """Toggle complete or incomplete of given id"""
 
-    task = get_object_or_404(Task, id=task_id)
-    task.is_complete = not task.is_complete
-    task.save()
-    return redirect("tasks:index")
-
-
-def update_task(request, task_id):
-    """Updates taskof given task_id"""
-
     if request.method == 'POST':
+        task_id = request.POST['task_id']
         task = get_object_or_404(Task, id=task_id)
-        task.detail = request.POST['updated_task']
+        task.is_complete = not task.is_complete
         task.save()
         return redirect("tasks:index")
+
+
+def update_form(request, task_id):
+    """Makes available update form for selected task """
 
     all_tasks = Task.objects.all()
     context = {
@@ -55,3 +34,38 @@ def update_task(request, task_id):
     }
 
     return render(request, 'tasks/index.html', context)
+
+
+class TaskView(View):
+
+    def get(self, request):
+        all_tasks = Task.objects.all()
+        context = {
+            "all_tasks": all_tasks
+        }
+        return render(request, 'tasks/index.html', context)
+
+    def post(self, request):
+
+        method = request.POST.get('method', 0)
+
+        # add new task
+        if method == 'POST':
+            task = Task(detail=request.POST['task_detail'])
+            task.save()
+            return redirect("tasks:task-view")
+
+        # update task detail
+        elif method == 'PUT':
+            task_id = request.POST['task_id']
+            task = get_object_or_404(Task, id=task_id)
+            task.detail = request.POST['task_detail']
+            task.save()
+            return redirect("tasks:task-view")
+
+        # deleting a task
+        elif method == 'DELETE':
+            task_id = request.POST.get('task_id')
+            task = get_object_or_404(Task, id=task_id)
+            task.delete()
+            return redirect("tasks:task-view")
