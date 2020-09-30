@@ -1,12 +1,14 @@
 {% extends 'tasks/base.html' %}
 
 {% block body %}
-This Is a Login Form
+<h1>
+    Login Form
+</h1>
 
 <form action="{% url 'users:login'%}" method="POST">
     {% csrf_token %}
     {{form.as_p}}
-    <input type="submit" value="Login">
+    <input class="btn btn-outline-success" type="submit" value="Login">
 </form>
-Don't have an account? <a href="/user/signup"><strong>register here</strong></a>!
+Don't have an account? <a href="/user/signup"><strong>Register here</strong></a>!
 {% endblock body %}

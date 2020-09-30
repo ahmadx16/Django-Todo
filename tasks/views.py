@@ -5,9 +5,10 @@ from .models import Task
 
 def index(request):
     """View all tasks"""
-
-    print(request.user.is_authenticated)
-    all_tasks = Task.objects.all()
+    
+    all_tasks = {}
+    if request.user.is_authenticated:
+        all_tasks = request.user.task_set.all()
     context = {
         "all_tasks": all_tasks
     }
@@ -40,7 +41,9 @@ def update_form(request, task_id):
 class TaskView(View):
 
     def get(self, request):
-        all_tasks = Task.objects.all()
+        all_tasks = {}
+        if request.user.is_authenticated:
+            all_tasks = request.user.task_set.all()
         context = {
             "all_tasks": all_tasks
         }
@@ -51,7 +54,7 @@ class TaskView(View):
         method = request.POST.get('method', 0)
         # add new task
         if method == 'POST':
-            task = Task(detail=request.POST['task_detail'])
+            task = Task(user=request.user, detail=request.POST['task_detail'])
             task.save()
             return redirect("tasks:task-view")
 
