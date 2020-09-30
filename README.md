@@ -41,7 +41,6 @@ pip install -r requirements.txt
 Before launching the application run the following command on terminal.
 
 ``` shell
-cd todo_list
 python manage.py migrate
 ```
 
