@@ -15,21 +15,30 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-default bg-light">
         <div class="container-fluid">
             <!-- Header-->
             <div class="navbar-header">
                 <a href="/" class="navbar-brand">MY TODO TASKS</a>
             </div>
 
-            
+
             <!--Logout Button-->
             {% if user.is_authenticated %}
-            <span class="text text-success">Welcome {{user.first_name}} !</span>
-            <a class="btn btn-primary" href="/user/profile"> Profile</a>
-            <a class="btn btn-outline-danger" href="/user/logout"> Logout</a>
+            <div style="float:right;">
+                <span class="text text-success">Welcome {{user.first_name}} !</span>
+                <a class="btn btn-outline-success" href="/"> Home</a>
+                <a class="btn btn-primary" href="/user/profile"> View Profile</a>
+                <a class="btn btn-outline-danger" href="/user/logout"> Logout</a>
+            </div>
+            {% else %}
+            <div style="float:right;">
+                <a class="btn btn-outline-primary" href="/user/login"> Login</a>
+                <a class="btn btn-outline-primary" href="/user/signup"> Sign Up</a>
+            </div>
+
             {% endif %}
-            
+
         </div>
     </nav>
 

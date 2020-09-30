@@ -1,7 +1,15 @@
 {% extends 'tasks/base.html' %}
 
+{% load custom_tags%}
 
 {% block body %}
+
+<div>
+    <h5> There are total <span class="text-success">{% all_tasks_count %} task/s </span> added by total
+        <span class="text-success">{% all_users_count %} registered user/s </span>
+    </h5>
+</div>
+
 <div class="container ">
 
     {% if user.is_authenticated %}
@@ -72,8 +80,10 @@
         {% endfor %}
     </ul>
     {% else %}
-    You are not logged in.
-    <a href="/user/login"> Login Now!</a>
+    <h4 class="text-danger">
+        You are not logged in.
+        <a href="/user/login"> Login Now!</a>
+    </h4>
     {% endif %}
 
 </div>

@@ -48,3 +48,8 @@ li {
 .completed {
     text-decoration: line-through;
 }
+
+.logo-font {
+    font-family: 'Satisfy', cursive;
+    font-size:1.5em;
+}
