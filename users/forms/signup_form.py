@@ -19,6 +19,15 @@ class SignupForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
+    def clean(self):
+        super(SignupForm, self).clean()
+
+        # Validates whether both passwords matches
+        password = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
+        if not password == password2:
+            raise forms.ValidationError('Passwords must match')
+
     def save(self, commit=True):
 
         user = super(SignupForm, self).save(commit=False)

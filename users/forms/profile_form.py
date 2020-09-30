@@ -16,6 +16,7 @@ class ProfileForm(forms.ModelForm):
             'bio',
         ]
 
+
     def save(self, request, commit=True):
         request.user.first_name = self.cleaned_data['first_name']
         request.user.last_name = self.cleaned_data['last_name']
