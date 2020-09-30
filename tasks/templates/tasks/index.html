@@ -4,7 +4,7 @@
 {% block body %}
 <div class="container ">
 
-
+    {% if user.is_authenticated %}
     <form action="{% url 'tasks:task-view'%}" method="POST">
         {% csrf_token %}
         <div class="input-group">
@@ -71,6 +71,10 @@
 
         {% endfor %}
     </ul>
+    {% else %}
+    You are not logged in. 
+    <a href="/user/login"> Login Now!</a>
+    {% endif %}
 
 </div>
 {% endblock body %}

@@ -6,6 +6,7 @@ from .models import Task
 def index(request):
     """View all tasks"""
 
+    print(request.user.is_authenticated)
     all_tasks = Task.objects.all()
     context = {
         "all_tasks": all_tasks
@@ -48,7 +49,6 @@ class TaskView(View):
     def post(self, request):
 
         method = request.POST.get('method', 0)
-
         # add new task
         if method == 'POST':
             task = Task(detail=request.POST['task_detail'])

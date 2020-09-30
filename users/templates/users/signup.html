@@ -3,8 +3,11 @@
 {% block body %}
 This Is a Sign Up Form
 
-<form action="">
-{{form.as_p}}
+<form action="{% url 'users:signup'%}" method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Login">
 </form>
+Already have an account? <a href="/user/login"><strong>login here</strong></a>!
 
 {% endblock body %}
