@@ -19,11 +19,14 @@
         <div class="container-fluid">
             <!-- Header-->
             <div class="navbar-header">
-                <a href="#" class="navbar-brand">MY TODO TASKS</a>
+                <a href="/" class="navbar-brand">MY TODO TASKS</a>
             </div>
 
+            
             <!--Logout Button-->
             {% if user.is_authenticated %}
+            <span class="text text-success">Welcome {{user.first_name}} !</span>
+            <a class="btn btn-primary" href="/user/profile"> Profile</a>
             <a class="btn btn-outline-danger" href="/user/logout"> Logout</a>
             {% endif %}
             

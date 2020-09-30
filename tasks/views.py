@@ -29,7 +29,9 @@ def toggle_task(request):
 def update_form(request, task_id):
     """Makes available update form for selected task """
 
-    all_tasks = Task.objects.all()
+    all_tasks = {}
+    if request.user.is_authenticated:
+        all_tasks = request.user.task_set.all()
     context = {
         "all_tasks": all_tasks,
         "edit_task": task_id
