@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 from django.contrib.auth.models import User
 
@@ -23,13 +24,13 @@ class ProfileView(View):
             return redirect("/")
 
         initial_form_values = {
-            'first_name':request.user.first_name,
-            'last_name':request.user.last_name,
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
             'email': request.user.email,
             'date_of_birth': request.user.profile.date_of_birth,
-            'bio':request.user.profile.bio,
+            'bio': request.user.profile.bio,
         }
-        
+
         form = ProfileForm(initial=initial_form_values)
         context = {
             "form": form
@@ -67,38 +68,44 @@ class LoginView(View):
                 print(f"You are now logged in as {username}")
                 return redirect('/')
             else:
-                print("Invalid username or password.")
+                messages.error(request, "Invalid username or password.")
         else:
-            print("Invalid username or password.")
+            messages.error(request, "Invalid username or password.")
 
         return redirect('users:login')
 
 
 class SignupView(View):
 
-    def get(self, request, error_messages=None):
+    def get(self, request):
         if request.user.is_authenticated:
             return redirect('tasks:task-view')
 
         signup_form = SignupForm()
         context = {
             "form": signup_form,
-            "error_messages": error_messages
         }
         return render(request, "users/signup.html", context)
 
     def post(self, request):
         signup_form = SignupForm(request.POST or None)
-        if signup_form.is_valid():
-            signup_form.save()
 
-            # auto login after signup
-            username = signup_form.cleaned_data.get('username')
-            password = signup_form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                print(f"You are now logged in as {username}")
-                return redirect('/')
-
+        # return when invalid form data
+        if not signup_form.is_valid():
+            messages.error(request, "Invalid Form data. Please enter validform data")
             return redirect('users:signup')
+
+        signup_form.save()
+        # auto login after signup
+        username = signup_form.cleaned_data.get('username')
+        password = signup_form.cleaned_data.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            print(f"You are now logged in as {username}")
+            return redirect('/')
+
+        return redirect('users:signup')
+
+        
+            

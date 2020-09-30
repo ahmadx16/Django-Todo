@@ -4,6 +4,7 @@
 
 {% block body %}
 <div class="container">
+<h1>Profile</h1>
     <form action="{% url 'users:profile' %}" method="post">
         {% csrf_token %}
         {{form|crispy }}

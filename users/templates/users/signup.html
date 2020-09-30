@@ -5,6 +5,11 @@
     Sign Up Form
 </h1>
 
+{% for message in messages %}
+<span class="text text-danger">
+    {{message}}
+</span>
+{% endfor %}
 <form action="{% url 'users:signup'%}" method="POST">
     {% csrf_token %}
     {{form.as_p}}
