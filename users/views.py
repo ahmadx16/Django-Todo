@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from .forms.login_form import LoginForm
 from .forms.signup_form import SignupForm
 from .forms.profile_form import ProfileForm
+from .assets.login_authenticate import login_authenticate
 
 
 def logout_request(request):
@@ -59,19 +60,12 @@ class LoginView(View):
 
     def post(self, request):
         form = AuthenticationForm(request=request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                print(f"You are now logged in as {username}")
-                return redirect('/')
-            else:
-                messages.error(request, "Invalid username or password.")
-        else:
-            messages.error(request, "Invalid username or password.")
 
+        if form.is_valid():
+            if login_authenticate(request, form.cleaned_data):
+                return redirect('/')
+
+        messages.error(request, "Invalid username or password.")
         return redirect('users:login')
 
 
@@ -96,16 +90,9 @@ class SignupView(View):
             return redirect('users:signup')
 
         signup_form.save()
+
         # auto login after signup
-        username = signup_form.cleaned_data.get('username')
-        password = signup_form.cleaned_data.get('password')
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            print(f"You are now logged in as {username}")
+        if login_authenticate(request, signup_form.cleaned_data):
             return redirect('/')
 
         return redirect('users:signup')
-
-        
-            
