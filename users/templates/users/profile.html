@@ -4,11 +4,11 @@
 
 {% block body %}
 <div class="container">
-<h1>Profile</h1>
+    <h1>Profile</h1>
     <form action="{% url 'users:profile' %}" method="post">
         {% csrf_token %}
         {{form|crispy }}
-        <input class="btn btn-outline-success" type="submit" value="Confirm Edit">
+        <input class="btn btn-outline-success" type="submit" value="Save">
     </form>
 </div>
 {% endblock body %}

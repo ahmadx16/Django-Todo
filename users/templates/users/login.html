@@ -6,9 +6,9 @@
 </h1>
 
 {% for message in messages %}
-    <span class="text text-danger">
-        {{message}}
-    </span>
+<span class="text text-danger">
+    {{message}}
+</span>
 {% endfor %}
 <form action="{% url 'users:login'%}" method="POST">
     {% csrf_token %}

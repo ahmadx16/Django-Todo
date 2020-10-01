@@ -3,6 +3,7 @@ from django.views import View
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.http import HttpResponse
 
 from django.contrib.auth.models import User
 
@@ -11,6 +12,17 @@ from .forms.signup_form import SignupForm
 from .forms.profile_form import ProfileForm
 from .assets.login_authenticate import login_authenticate
 
+
+# Custom Error pages
+def error_404_view(request, exception):
+    return render(request, '404page.html')
+
+def error_500_view(request):
+    return render(request, '500page.html')
+
+def server_exception(request):
+    # This fuction is to create exception
+    a = 3/0
 
 def logout_request(request):
     logout(request)
@@ -86,7 +98,7 @@ class SignupView(View):
 
         # return when invalid form data
         if not signup_form.is_valid():
-            messages.error(request, "Invalid Form data. Please enter validform data")
+            messages.error(request, "Invalid Form data. Please enter valid form data")
             return redirect('users:signup')
 
         signup_form.save()

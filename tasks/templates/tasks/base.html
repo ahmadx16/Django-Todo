@@ -22,13 +22,18 @@
                 <a href="/" class="navbar-brand">MY TODO TASKS</a>
             </div>
 
-
+            <!-- For testing custom exception (Set DEBUG variable in the settings to true to check exceptions)-->
+            {% comment %} <div>
+                <a class="text-danger" href="/user/server-exception">Server Exception</a> |
+                <a class="text-danger" href="/an-invalid-page">Page not found</a>
+            </div> {% endcomment %}
             <!--Logout Button-->
+
             {% if user.is_authenticated %}
             <div style="float:right;">
                 <span class="text text-success">Welcome {{user.first_name}} !</span>
                 <a class="btn btn-outline-success" href="/"> Home</a>
-                <a class="btn btn-primary" href="/user/profile"> View Profile</a>
+                <a class="btn btn-outline-primary" href="/user/profile"> View Profile</a>
                 <a class="btn btn-outline-danger" href="/user/logout"> Logout</a>
             </div>
             {% else %}
