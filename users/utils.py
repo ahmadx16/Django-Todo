@@ -3,10 +3,12 @@ from django.contrib.auth import authenticate, login
 
 
 def login_authenticate(request, form_data):
-    username = form_data.get('username')
+    print(form_data)
+    email = form_data.get('email')
     password = form_data.get('password')
-    user = authenticate(username=username, password=password)
+    user = authenticate(email=email, password=password)
     if user is not None:
         login(request, user)
+
         return True
     return False

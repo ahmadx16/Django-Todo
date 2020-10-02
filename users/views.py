@@ -60,14 +60,15 @@ class LoginView(View):
         if request.user.is_authenticated:
             return redirect('tasks:task-view')
 
-        login_form = AuthenticationForm()
+        login_form = LoginForm()
         context = {
             "form": login_form
         }
         return render(request, 'users/login.html', context)
 
     def post(self, request):
-        form = AuthenticationForm(request=request, data=request.POST)
+        print(request.POST)
+        form = LoginForm(data=request.POST)
 
         if form.is_valid():
             if login_authenticate(request, form.cleaned_data):

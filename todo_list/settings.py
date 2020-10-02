@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'crispy_forms',
-    
+
     # local apps
     'tasks.apps.TasksConfig',
     'users.apps.UsersConfig',
@@ -128,3 +128,5 @@ STATIC_URL = '/static/'
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+AUTH_USER_MODEL = 'users.CustomUser'
