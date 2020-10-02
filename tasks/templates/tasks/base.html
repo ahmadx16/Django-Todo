@@ -1,0 +1,55 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List App</title>
+
+    {% load static %}
+    <link type="text/css" rel="stylesheet" href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
+    <link type="text/css" rel="stylesheet"
+        href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+    <link rel="stylesheet" href="{% static 'tasks/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default bg-light">
+        <div class="container-fluid">
+            <!-- Header-->
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand">MY TODO TASKS</a>
+            </div>
+
+            <!-- For testing custom exception (Set DEBUG variable in the settings to true to check exceptions)-->
+            {% comment %} <div>
+                <a class="text-danger" href="/user/server-exception">Server Exception</a> |
+                <a class="text-danger" href="/an-invalid-page">Page not found</a>
+            </div> {% endcomment %}
+            <!--Logout Button-->
+
+            {% if user.is_authenticated %}
+            <div style="float:right;">
+                <span class="text text-success">Welcome {{user.first_name}} !</span>
+                <a class="btn btn-outline-success" href="/"> Home</a>
+                <a class="btn btn-outline-primary" href="/user/profile"> View Profile</a>
+                <a class="btn btn-outline-danger" href="/user/logout"> Logout</a>
+            </div>
+            {% else %}
+            <div style="float:right;">
+                <a class="btn btn-outline-primary" href="/user/login"> Login</a>
+                <a class="btn btn-outline-primary" href="/user/signup"> Sign Up</a>
+            </div>
+
+            {% endif %}
+
+        </div>
+    </nav>
+
+    {% block body %}
+    {% endblock body %}
+
+</body>
+
+</html>

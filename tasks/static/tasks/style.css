@@ -1,0 +1,55 @@
+
+
+li {
+    list-style-type: none;
+    margin-top: 1em;
+}
+
+.li-input {
+    width: 20em;
+}
+
+.btn-update {
+    padding: 2px;
+}
+
+.add-item {
+    width: 55em;
+    height: 3em;
+}
+
+.center {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.container {
+    margin-top: 10em;
+    background-color: #f5f5f5;
+    padding: 5em;
+}
+
+.btn-add {
+    width: 55em;
+    margin-bottom: 20px;
+    background-color: #212529;
+    color: #fff
+}
+
+.navbar-brand {
+    font-family: 'Satisfy', cursive;
+    font-size:1.5em;
+}
+
+.task-text {
+    margin-left: 10px;
+}
+
+.completed {
+    text-decoration: line-through;
+}
+
+.logo-font {
+    font-family: 'Satisfy', cursive;
+    font-size:1.5em;
+}

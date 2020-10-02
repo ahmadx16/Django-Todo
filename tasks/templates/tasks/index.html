@@ -1,0 +1,95 @@
+{% extends 'tasks/base.html' %}
+
+{% load custom_tags%}
+
+{% block body %}
+
+<div>
+    <h5> There are total <span class="text-success">{% all_tasks_count %} task/s </span> added by total
+        <span class="text-success">{% all_users_count %} registered user/s </span>
+    </h5>
+</div>
+
+<div class="container ">
+
+    {% if user.is_authenticated %}
+    {% for message in messages %}
+    <span class="text text-danger">
+        {{message}}
+    </span>
+    {% endfor %}
+    <form action="{% url 'tasks:task-view'%}" method="POST">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="hidden" name="method" value="POST">
+            <input type="text" class="add-item" name="task_detail" placeholder="What do you need to do today?">
+            <input type="submit" value="Add Task" class="btn btn-default btn-add">
+        </div>
+    </form>
+
+
+    <ul>
+        {% for task in all_tasks  %}
+        <li>
+            <div class="row">
+                <div class="col-md-8">
+                    {% if edit_task == task.id %}
+                    <form action="{% url 'tasks:task-view' %}" method="POST" style="display: inline-block;">
+                        {% csrf_token %}
+                        <input type="hidden" name="method" value="PUT">
+                        <input type="hidden" name="task_id" value="{{task.id}}">
+                        <input class="li-input" type="text" name="task_detail" value="{{task.detail}}">
+                        <input class="btn btn-info btn-update" type="submit" value="update">
+                    </form>
+                    {% else %}
+                    <form action="{% url 'tasks:toggle-task-complete'%}" method="POST" style="display: inline-block;">
+                        {% csrf_token %}
+                        <input type="hidden" name="task_id" value="{{task.id}}">
+                        {% if task.is_complete %}
+                        <button class="btn btn-success" data-toggle="tooltip" data-placement="top"
+                            title="Toggle Task Status">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </button>
+                        {% else %}
+                        <button class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top"
+                            title="Toggle Task Status">
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    <a href="{% url 'tasks:update-form' task.id %}" class="btn btn-outline-info" data-toggle="tooltip"
+                        data-placement="top" title="Edit Task">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                    <span class="task-text {% if task.is_complete %} completed{% endif %}">{{task.detail}} </span>
+                    {% endif %}
+
+                </div>
+                <div class="col-md-4">
+                    <!-- Delete task form -->
+                    <form action="{% url 'tasks:task-view' %}" method="POST" style="display: inline-block;">
+                        {% csrf_token %}
+                        <input type="hidden" name="method" value="DELETE">
+                        <input type="hidden" name="task_id" value="{{task.id}}">
+                        <button class="btn btn-danger round" type="submit">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </li>
+
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h4 class="text-danger">
+        You are not logged in.
+        <a href="/user/login"> Login Now!</a>
+    </h4>
+    {% endif %}
+
+</div>
+{% endblock body %}

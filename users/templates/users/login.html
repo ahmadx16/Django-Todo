@@ -1,0 +1,19 @@
+{% extends 'tasks/base.html' %}
+
+{% block body %}
+<h1>
+    Login Form
+</h1>
+
+{% for message in messages %}
+<span class="text text-danger">
+    {{message}}
+</span>
+{% endfor %}
+<form action="{% url 'users:login'%}" method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input class="btn btn-outline-success" type="submit" value="Login">
+</form>
+Don't have an account? <a href="/user/signup"><strong>Register here</strong></a>!
+{% endblock body %}
