@@ -10,23 +10,20 @@ from django.contrib.auth.models import User
 from .forms.login_form import LoginForm
 from .forms.signup_form import SignupForm
 from .forms.profile_form import ProfileForm
-from .assets.login_authenticate import login_authenticate
+from .utils import login_authenticate
 
 
 # Custom Error pages
 def error_404_view(request, exception):
     return render(request, '404page.html')
 
+
 def error_500_view(request):
     return render(request, '500page.html')
 
-def server_exception(request):
-    # This fuction is to create exception
-    a = 3/0
 
 def logout_request(request):
     logout(request)
-    print("User logged out successfully")
     return redirect('users:login')
 
 
@@ -51,10 +48,9 @@ class ProfileView(View):
         return render(request, 'users/profile.html', context)
 
     def post(self, request):
-        profile_form = ProfileForm(request.POST or None)
+        profile_form = ProfileForm(request.POST, instance=request.user)
         if profile_form.is_valid():
-            profile_form.save(request)
-
+            profile_form.save()
             return redirect('users:profile')
 
 

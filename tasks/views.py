@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from django.contrib import messages
+
 from .models import Task
+from .exceptions import InvalidTask
+from .utils import validate_task
 
 
 def index(request):
     """View all tasks"""
-    
+
     all_tasks = {}
     if request.user.is_authenticated:
         all_tasks = request.user.task_set.all()
@@ -14,6 +18,7 @@ def index(request):
     }
 
     return render(request, 'tasks/index.html', context)
+
 
 def toggle_task(request):
     """Toggle complete or incomplete of given id"""
@@ -41,6 +46,16 @@ def update_form(request, task_id):
 
 
 class TaskView(View):
+    http_method_names = ['get', 'post', 'put', 'delete']
+
+    # handle put and delete for html forms
+    def dispatch(self, *args, **kwargs):
+        method = self.request.POST.get('method', '').lower()
+        if method == 'put':
+            return self.put(*args, **kwargs)
+        if method == 'delete':
+            return self.delete(*args, **kwargs)
+        return super(TaskView, self).dispatch(*args, **kwargs)
 
     def get(self, request):
         all_tasks = {}
@@ -52,25 +67,28 @@ class TaskView(View):
         return render(request, 'tasks/index.html', context)
 
     def post(self, request):
-
-        method = request.POST.get('method', 0)
         # add new task
-        if method == 'POST':
-            task = Task(user=request.user, detail=request.POST['task_detail'])
+
+        try:
+            task_detail = request.POST['task_detail']
+            validate_task(task_detail)
+            task = Task(user=request.user, detail=task_detail)
             task.save()
             return redirect("tasks:task-view")
-
-        # update task detail
-        elif method == 'PUT':
-            task_id = request.POST['task_id']
-            task = get_object_or_404(Task, id=task_id)
-            task.detail = request.POST['task_detail']
-            task.save()
+        except InvalidTask:
+            messages.error(request, "Invalid Task: Cannot add task. Make  sure your task contains valid characters")
             return redirect("tasks:task-view")
 
-        # deleting a task
-        elif method == 'DELETE':
-            task_id = request.POST.get('task_id')
-            task = get_object_or_404(Task, id=task_id)
-            task.delete()
-            return redirect("tasks:task-view")
+        
+    def put(self, request):
+        task_id = request.POST['task_id']
+        task = get_object_or_404(Task, id=task_id)
+        task.detail = request.POST['task_detail']
+        task.save()
+        return redirect("tasks:task-view")
+
+    def delete(self, request):
+        task_id = request.POST.get('task_id')
+        task = get_object_or_404(Task, id=task_id)
+        task.delete()
+        return redirect("tasks:task-view")

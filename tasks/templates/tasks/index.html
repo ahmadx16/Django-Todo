@@ -13,6 +13,11 @@
 <div class="container ">
 
     {% if user.is_authenticated %}
+    {% for message in messages %}
+    <span class="text text-danger">
+        {{message}}
+    </span>
+    {% endfor %}
     <form action="{% url 'tasks:task-view'%}" method="POST">
         {% csrf_token %}
         <div class="input-group">
@@ -46,7 +51,7 @@
                             <i class="fa fa-check" aria-hidden="true"></i>
                         </button>
                         {% else %}
-                        <button class="btn btn-default" data-toggle="tooltip" data-placement="top"
+                        <button class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top"
                             title="Toggle Task Status">
                             <i class="fa fa-square-o" aria-hidden="true"></i>
                         </button>
