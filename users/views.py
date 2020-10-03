@@ -67,7 +67,6 @@ class LoginView(View):
         return render(request, 'users/login.html', context)
 
     def post(self, request):
-        print(request.POST)
         form = LoginForm(data=request.POST)
 
         if form.is_valid():
