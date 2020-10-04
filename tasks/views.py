@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib import messages
+from django.db.models import Q
 
 from .models import Task
 from .exceptions import InvalidTask
@@ -79,7 +80,6 @@ class TaskView(View):
             messages.error(request, "Invalid Task: Cannot add task. Make  sure your task contains valid characters")
             return redirect("tasks:task-view")
 
-        
     def put(self, request):
         task_id = request.POST['task_id']
         task = get_object_or_404(Task, id=task_id)
@@ -92,3 +92,19 @@ class TaskView(View):
         task = get_object_or_404(Task, id=task_id)
         task.delete()
         return redirect("tasks:task-view")
+
+
+# Search Task View
+def search_task(request):
+    if not request.user.is_authenticated:
+        return redirect('users:login')
+
+    search_text = request.GET.get('search_text',)
+    if search_text:
+        print(search_text)
+        query_tasks = request.user.task_set.filter(Q(detail__icontains=search_text))
+    else:
+        query_tasks = request.user.task_set.all()
+
+    print(query_tasks)
+    return render(request, 'tasks/search.html', context={'query_tasks': query_tasks})

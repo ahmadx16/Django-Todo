@@ -11,16 +11,20 @@ class CustomAuthentication:
 
     def __call__(self, request):
 
-        # adds user object to request if session key in cookies
+        # adds user object to request if session key is in cookies
 
         session_key = request.COOKIES.get('sessionid',)
         if session_key:
-            session = Session.objects.get(session_key=session_key)
-            uid = session.get_decoded().get('_auth_user_id')
-            user = CustomUser.objects.get(pk=uid)
-            request.user = user
+            try:
+                session = Session.objects.get(session_key=session_key)
+                uid = session.get_decoded().get('_auth_user_id')
+                user = CustomUser.objects.get(pk=uid)
+                request.user = user
+            except CustomUser.DoesNotExist:
+                request.user = AnonymousUser()
         else:
             request.user = AnonymousUser()
+
         response = self.get_response(request)
 
         return response
