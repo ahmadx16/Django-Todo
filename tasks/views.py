@@ -125,7 +125,7 @@ def search_task(request):
     return render(request, 'tasks/search.html', context={'query_tasks': query_tasks})
 
 
-# Bulk Tasks Operations
+# ----- Bulk Tasks Operations -----
 
 def bulk_index(request):
 
@@ -143,9 +143,7 @@ def bulk_add(request):
 
     if request.method == 'POST':
         task_details = request.POST.get('task_detail').split('\r')
-
         task_objs = [Task(user=request.user, detail=task_detail) for task_detail in task_details]
-
         Task.objects.bulk_create(task_objs)
 
     return redirect('tasks:bulk-index')
@@ -159,7 +157,6 @@ def bulk_update(request):
     if request.method == 'POST':
         task_ids = request.POST.getlist('task_id')
         task_details = request.POST.getlist('task_detail')
-
         task_objs = list(Task.objects.filter(pk__in=task_ids))
 
         for i in range(len(task_ids)):
