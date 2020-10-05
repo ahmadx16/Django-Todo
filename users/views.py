@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponse
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from .forms.login_form import LoginForm
 from .forms.signup_form import SignupForm
@@ -13,7 +13,11 @@ from .forms.profile_form import ProfileForm
 from .utils import login_authenticate
 
 
+User = get_user_model()
+
 # Custom Error pages
+
+
 def error_404_view(request, exception):
     return render(request, '404page.html')
 
@@ -33,12 +37,14 @@ class ProfileView(View):
         if not request.user.is_authenticated:
             return redirect("/")
 
+        user = User.objects.select_related('profile').get(email=request.user.email)
+
         initial_form_values = {
-            'first_name': request.user.first_name,
-            'last_name': request.user.last_name,
-            'email': request.user.email,
-            'date_of_birth': request.user.profile.date_of_birth,
-            'bio': request.user.profile.bio,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'date_of_birth': user.profile.date_of_birth,
+            'bio': user.profile.bio,
         }
 
         form = ProfileForm(initial=initial_form_values)

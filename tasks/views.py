@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib import messages
 from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 
 from .models import Task
 from .exceptions import InvalidTask
 from .utils import validate_task
+
+User = get_user_model()
 
 
 def index(request):
@@ -61,7 +65,9 @@ class TaskView(View):
     def get(self, request):
         all_tasks = {}
         if request.user.is_authenticated:
-            all_tasks = request.user.task_set.all()
+
+            user = User.objects.prefetch_related('task_set').get(email=request.user.email)
+            all_tasks = user.task_set.all()
         context = {
             "all_tasks": all_tasks
         }
@@ -74,10 +80,21 @@ class TaskView(View):
             task_detail = request.POST['task_detail']
             validate_task(task_detail)
             task = Task(user=request.user, detail=task_detail)
-            task.save()
-            return redirect("tasks:task-view")
-        except InvalidTask:
-            messages.error(request, "Invalid Task: Cannot add task. Make  sure your task contains valid characters")
+
+            # For model level validations check
+            try:
+                task.full_clean()
+                _, created = Task.objects.get_or_create(user=request.user, detail=task_detail)
+                if not created:
+                    messages.error(request, "Task already exists")
+                return redirect("tasks:task-view")
+            except ValidationError as error:
+
+                messages.error(request, error)
+                return redirect("tasks:task-view")
+
+        except InvalidTask as error:
+            messages.error(request, error)
             return redirect("tasks:task-view")
 
     def put(self, request):
@@ -101,12 +118,10 @@ def search_task(request):
 
     search_text = request.GET.get('search_text',)
     if search_text:
-        print(search_text)
         query_tasks = request.user.task_set.filter(Q(detail__icontains=search_text))
     else:
         query_tasks = request.user.task_set.all()
 
-    print(query_tasks)
     return render(request, 'tasks/search.html', context={'query_tasks': query_tasks})
 
 

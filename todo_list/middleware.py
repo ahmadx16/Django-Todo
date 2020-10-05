@@ -20,7 +20,7 @@ class CustomAuthentication:
                 uid = session.get_decoded().get('_auth_user_id')
                 user = CustomUser.objects.get(pk=uid)
                 request.user = user
-            except CustomUser.DoesNotExist:
+            except (CustomUser.DoesNotExist, Session.DoesNotExist):
                 request.user = AnonymousUser()
         else:
             request.user = AnonymousUser()
