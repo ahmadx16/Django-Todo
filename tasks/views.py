@@ -108,3 +108,48 @@ def search_task(request):
 
     print(query_tasks)
     return render(request, 'tasks/search.html', context={'query_tasks': query_tasks})
+
+
+# Bulk Tasks Operations
+
+def bulk_index(request):
+
+    if not request.user.is_authenticated:
+        return redirect('users:login')
+
+    all_tasks = request.user.task_set.all()
+
+    return render(request, 'tasks/bulk_operations.html', context={'all_tasks': all_tasks})
+
+
+def bulk_add(request):
+    if not request.user.is_authenticated:
+        return redirect('users:login')
+
+    if request.method == 'POST':
+        task_details = request.POST.get('task_detail').split('\r')
+
+        task_objs = [Task(user=request.user, detail=task_detail) for task_detail in task_details]
+
+        Task.objects.bulk_create(task_objs)
+
+    return redirect('tasks:bulk-index')
+
+
+def bulk_update(request):
+
+    if not request.user.is_authenticated:
+        return redirect('users:login')
+
+    if request.method == 'POST':
+        task_ids = request.POST.getlist('task_id')
+        task_details = request.POST.getlist('task_detail')
+
+        task_objs = list(Task.objects.filter(pk__in=task_ids))
+
+        for i in range(len(task_ids)):
+            task_objs[i].detail = task_details[i]
+
+        Task.objects.bulk_update(task_objs, ['detail'])
+
+    return redirect('tasks:bulk-index')
