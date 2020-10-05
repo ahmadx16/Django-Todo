@@ -15,7 +15,7 @@ Clone this repository and switch to the `ahmedhasan-todolist` branch as it curre
 ``` shell
 git clone https://github.com/ahmadx16/Django-Todo.git
 cd Django-Todo/
-git checkout ahmedhasan-todolist
+git checkout custom-user-authentication
 ```
 
 The above commands will download the repository and switch the branch.
