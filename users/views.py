@@ -31,6 +31,22 @@ def logout_request(request):
     return redirect('users:login')
 
 
+class UserCreate(View):
+    """ This is  just to test and learn update or create method"""
+    
+    def get(self, request):
+        return render(request, 'users/create.html')
+
+    def post(self, request):
+        defaults = {
+            'first_name': request.POST.get('first_name'),
+            'last_name': request.POST.get('last_name'),
+        }
+        obj, cre = User.objects.update_or_create(email=request.POST.get('email'), defaults=defaults)
+        print(cre)
+        return redirect('users:login')
+
+
 class ProfileView(View):
 
     def get(self, request):
