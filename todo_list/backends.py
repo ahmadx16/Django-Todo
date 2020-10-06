@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import check_password
 User = get_user_model()
 
 
-class CustomBackend(BaseBackend):
+class EmailAuthenticationBackend(BaseBackend):
 
     def authenticate(self, request, email=None, password=None):
         try:

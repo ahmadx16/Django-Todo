@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
+from users.decorators import authenticated_user
 from .models import Task
 from .exceptions import InvalidTask
 from .utils import validate_task
@@ -12,12 +13,11 @@ from .utils import validate_task
 User = get_user_model()
 
 
+@authenticated_user()
 def index(request):
     """View all tasks"""
 
-    all_tasks = {}
-    if request.user.is_authenticated:
-        all_tasks = request.user.task_set.all()
+    all_tasks = request.user.task_set.all()
     context = {
         "all_tasks": all_tasks
     }
@@ -25,6 +25,7 @@ def index(request):
     return render(request, 'tasks/index.html', context)
 
 
+@authenticated_user()
 def toggle_task(request):
     """Toggle complete or incomplete of given id"""
 
@@ -36,12 +37,11 @@ def toggle_task(request):
         return redirect("tasks:index")
 
 
+@authenticated_user()
 def update_form(request, task_id):
     """Makes available update form for selected task """
 
-    all_tasks = {}
-    if request.user.is_authenticated:
-        all_tasks = request.user.task_set.all()
+    all_tasks = request.user.task_set.all()
     context = {
         "all_tasks": all_tasks,
         "edit_task": task_id
@@ -62,17 +62,18 @@ class TaskView(View):
             return self.delete(*args, **kwargs)
         return super(TaskView, self).dispatch(*args, **kwargs)
 
+    @authenticated_user(view_type="class")
     def get(self, request):
-        all_tasks = {}
-        if request.user.is_authenticated:
-
-            user = User.objects.prefetch_related('task_set').get(email=request.user.email)
-            all_tasks = user.task_set.all()
+        if not request.user.is_authenticated:
+            return redirect('users:login')
+        user = User.objects.prefetch_related('task_set').get(email=request.user.email)
+        all_tasks = user.task_set.all()
         context = {
             "all_tasks": all_tasks
         }
         return render(request, 'tasks/index.html', context)
 
+    @authenticated_user(view_type="class")
     def post(self, request):
         # add new task
 
@@ -97,6 +98,7 @@ class TaskView(View):
             messages.error(request, error)
             return redirect("tasks:task-view")
 
+    @authenticated_user(view_type="class")
     def put(self, request):
         task_id = request.POST['task_id']
         task = get_object_or_404(Task, id=task_id)
@@ -104,6 +106,7 @@ class TaskView(View):
         task.save()
         return redirect("tasks:task-view")
 
+    @authenticated_user(view_type="class")
     def delete(self, request):
         task_id = request.POST.get('task_id')
         task = get_object_or_404(Task, id=task_id)
@@ -112,34 +115,26 @@ class TaskView(View):
 
 
 # Search Task View
+@authenticated_user()
 def search_task(request):
-    if not request.user.is_authenticated:
-        return redirect('users:login')
 
-    search_text = request.GET.get('search_text',)
-    if search_text:
-        query_tasks = request.user.task_set.filter(Q(detail__icontains=search_text))
-    else:
-        query_tasks = request.user.task_set.all()
+    search_text = request.GET.get('search_text', "")
+    query_tasks = request.user.task_set.filter(Q(detail__icontains=search_text))
 
     return render(request, 'tasks/search.html', context={'query_tasks': query_tasks})
 
 
 # ----- Bulk Tasks Operations -----
-
+@authenticated_user()
 def bulk_index(request):
-
-    if not request.user.is_authenticated:
-        return redirect('users:login')
 
     all_tasks = request.user.task_set.all()
 
     return render(request, 'tasks/bulk_operations.html', context={'all_tasks': all_tasks})
 
 
+@authenticated_user()
 def bulk_add(request):
-    if not request.user.is_authenticated:
-        return redirect('users:login')
 
     if request.method == 'POST':
         task_details = request.POST.get('task_detail').split('\r')
@@ -149,10 +144,8 @@ def bulk_add(request):
     return redirect('tasks:bulk-index')
 
 
+@authenticated_user()
 def bulk_update(request):
-
-    if not request.user.is_authenticated:
-        return redirect('users:login')
 
     if request.method == 'POST':
         task_ids = request.POST.getlist('task_id')

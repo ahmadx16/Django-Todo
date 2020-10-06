@@ -58,7 +58,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'todo_list.backends.CustomBackend',
+    'todo_list.backends.EmailAuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'todo_list.urls'
