@@ -35,6 +35,13 @@ class Profile(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
 
+class DateTime(models.Model):
+    datetime = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.datetime.date()) + ' - ' + str(self.datetime.time())
+
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def update_user_profile(sender, instance, created, **kwargs):
 

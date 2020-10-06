@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'crispy_forms',
+    'django_crontab',
 
     # local apps
     'tasks.apps.TasksConfig',
@@ -136,3 +137,7 @@ STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+CRONJOBS = [
+    ('*/1 * * * *', 'users.cron.change_timezone')
+]
