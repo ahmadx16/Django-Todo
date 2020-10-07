@@ -7,6 +7,7 @@ from django.http import HttpResponse
 
 from django.contrib.auth import get_user_model
 
+from users.decorators import authenticated_user
 from .forms.login_form import LoginForm
 from .forms.signup_form import SignupForm
 from .forms.profile_form import ProfileForm
@@ -34,21 +35,23 @@ def logout_request(request):
 class UserCreate(View):
     """ This is  just to test and learn update or create method"""
     
+    @authenticated_user(view_type="class")
     def get(self, request):
         return render(request, 'users/create.html')
 
+    @authenticated_user(view_type="class")
     def post(self, request):
         defaults = {
             'first_name': request.POST.get('first_name'),
             'last_name': request.POST.get('last_name'),
         }
-        obj, cre = User.objects.update_or_create(email=request.POST.get('email'), defaults=defaults)
-        print(cre)
+        User.objects.update_or_create(email=request.POST.get('email'), defaults=defaults)
         return redirect('users:login')
 
 
 class ProfileView(View):
 
+    @authenticated_user(view_type="class")
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect("/")
@@ -69,6 +72,7 @@ class ProfileView(View):
         }
         return render(request, 'users/profile.html', context)
 
+    @authenticated_user(view_type="class")
     def post(self, request):
         profile_form = ProfileForm(request.POST, instance=request.user)
         if profile_form.is_valid():
