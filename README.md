@@ -10,7 +10,7 @@ Following are the instructions that you need perform in order to run the applica
 
 ## Cloning the Repository
 
-Clone this repository and switch to the `ahmedhasan-todolist` branch as it currently contains the latest code. Run the following commands on your shell
+Clone this repository and switch to the `custom-user-authentication` branch as it currently contains the latest code. Run the following commands on your shell
 
 ``` shell
 git clone https://github.com/ahmadx16/Django-Todo.git

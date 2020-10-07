@@ -16,6 +16,7 @@ class SessionAuthentication:
 
         # adds user object to request if session key is in cookies
 
+        request.user = AnonymousUser()
         session_key = request.COOKIES.get('sessionid',)
         if session_key:
             try:
@@ -25,8 +26,6 @@ class SessionAuthentication:
                 request.user = user
             except (User.DoesNotExist, Session.DoesNotExist):
                 request.user = AnonymousUser()
-        else:
-            request.user = AnonymousUser()
 
         response = self.get_response(request)
 
