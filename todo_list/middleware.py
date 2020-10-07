@@ -1,10 +1,13 @@
 
 from django.contrib.sessions.models import Session
 from django.contrib.auth.models import AnonymousUser
-from users.models import CustomUser
+from django.contrib.auth import get_user_model
 
 
-class CustomAuthentication:
+User = get_user_model()
+
+
+class SessionAuthentication:
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -18,9 +21,9 @@ class CustomAuthentication:
             try:
                 session = Session.objects.get(session_key=session_key)
                 uid = session.get_decoded().get('_auth_user_id')
-                user = CustomUser.objects.get(pk=uid)
+                user = User.objects.get(pk=uid)
                 request.user = user
-            except (CustomUser.DoesNotExist, Session.DoesNotExist):
+            except (User.DoesNotExist, Session.DoesNotExist):
                 request.user = AnonymousUser()
         else:
             request.user = AnonymousUser()

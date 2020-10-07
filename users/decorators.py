@@ -2,6 +2,8 @@ from django.shortcuts import redirect
 
 
 def authenticated_user(view_type="func"):
+    """ Lets only authenticates users to call view."""
+
     def authenticated_func(func):
         def authenticate(*args, **kwargs):
 

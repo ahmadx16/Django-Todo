@@ -64,8 +64,7 @@ class TaskView(View):
 
     @authenticated_user(view_type="class")
     def get(self, request):
-        if not request.user.is_authenticated:
-            return redirect('users:login')
+
         user = User.objects.prefetch_related('task_set').get(email=request.user.email)
         all_tasks = user.task_set.all()
         context = {
@@ -129,7 +128,6 @@ def search_task(request):
 def bulk_index(request):
 
     all_tasks = request.user.task_set.all()
-
     return render(request, 'tasks/bulk_operations.html', context={'all_tasks': all_tasks})
 
 
