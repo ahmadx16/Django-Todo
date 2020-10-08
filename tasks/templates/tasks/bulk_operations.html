@@ -2,6 +2,14 @@
 
 {% block body %}
 
+
+<div class="text-center">
+    {% for message in messages %}
+    <span class="text text-danger">
+        {{message}}
+    </span>
+    {% endfor %}
+</div>
 <div class="container-fluid" style="margin:20px;">
     <div class="row">
         <div class="col-sm">
@@ -25,10 +33,22 @@
         </div>
         <div class="col-sm">
             <h3>Bulk Create</h3>
-            <p>Enter line seperated tasks to bulk create</p>
+            <p>Create three tasks in bulk</p>
             <form action="{% url 'tasks:bulk-add'%}" method="post">
                 {% csrf_token %}
-                <textarea name="task_detail" rows="7" cols="80"></textarea>
+
+                {% with ''|center:add_task_count as range %}
+                {% for _ in range %}
+                <li>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input class="li-input" type="text" name="task_detail">
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+                {% endwith %}
+
                 <br> <br>
                 <input type="submit" class="btn btn-info" value="Bulk Create">
             </form>
