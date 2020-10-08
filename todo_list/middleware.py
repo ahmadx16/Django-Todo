@@ -7,12 +7,9 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class SessionAuthentication:
+def SessionAuthentication(get_response):
 
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
+    def middleware(request):
 
         # adds user object to request if session key is in cookies
 
@@ -27,6 +24,8 @@ class SessionAuthentication:
             except (User.DoesNotExist, Session.DoesNotExist):
                 request.user = AnonymousUser()
 
-        response = self.get_response(request)
+        response = get_response(request)
 
         return response
+    
+    return middleware

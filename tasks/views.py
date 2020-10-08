@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from users.decorators import authenticated_user
 from .models import Task
 from .exceptions import InvalidTask
-from .utils import validate_task
+from .utils import validate_task, get_tasks_errors
 
 User = get_user_model()
 
@@ -84,9 +84,7 @@ class TaskView(View):
             # For model level validations check
             try:
                 task.full_clean()
-                _, created = Task.objects.get_or_create(user=request.user, detail=task_detail)
-                if not created:
-                    messages.error(request, "Task already exists")
+                Task.objects.create(user=request.user, detail=task_detail)
                 return redirect("tasks:task-view")
             except ValidationError as error:
 
@@ -128,14 +126,19 @@ def search_task(request):
 def bulk_index(request):
 
     all_tasks = request.user.task_set.all()
-    return render(request, 'tasks/bulk_operations.html', context={'all_tasks': all_tasks})
+    context = {'all_tasks': all_tasks, 'add_task_count': 3}
+    return render(request, 'tasks/bulk_operations.html', context=context)
 
 
 @authenticated_user()
 def bulk_add(request):
 
     if request.method == 'POST':
-        task_details = request.POST.get('task_detail').split('\r')
+        task_details = request.POST.getlist('task_detail')
+        error = get_tasks_errors(task_details)
+        if error:
+            messages.error(request, error)
+            return redirect("tasks:bulk-index")
         task_objs = [Task(user=request.user, detail=task_detail) for task_detail in task_details]
         Task.objects.bulk_create(task_objs)
 
@@ -148,6 +151,11 @@ def bulk_update(request):
     if request.method == 'POST':
         task_ids = request.POST.getlist('task_id')
         task_details = request.POST.getlist('task_detail')
+        error = get_tasks_errors(task_details)
+        if error:
+            messages.error(request, error)
+            return redirect("tasks:bulk-index")
+
         task_objs = list(Task.objects.filter(pk__in=task_ids))
 
         for i in range(len(task_ids)):
