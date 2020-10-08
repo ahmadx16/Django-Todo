@@ -59,7 +59,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'todo_list.backends.CustomBackend',
+    'todo_list.backends.EmailAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
