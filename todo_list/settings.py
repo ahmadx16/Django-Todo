@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'crispy_forms',
-    
+
     # local apps
     'tasks.apps.TasksConfig',
     'users.apps.UsersConfig',
@@ -51,9 +51,14 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'todo_list.middleware.SessionAuthentication',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'todo_list.backends.EmailAuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'todo_list.urls'
@@ -128,3 +133,5 @@ STATIC_URL = '/static/'
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+AUTH_USER_MODEL = 'users.CustomUser'

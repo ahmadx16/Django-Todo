@@ -1,0 +1,23 @@
+{% extends 'tasks/base.html' %}
+
+{% block body %}
+<p>This page searches by partial matching with your tasks </p>
+<form action="{% url 'tasks:search-tasks' %}" method="get" style="display:inline-block;">
+    <input type="text" name="search_text">
+    <button type="submit" class="btn btn-info"> Search Tasks</button>
+</form>
+
+<a href="{% url 'tasks:search-tasks' %}" class="btn btn-primary">All Tasks</a>
+
+<ul>
+    {% if not query_tasks %}
+    <p class="text text-danger"> No task matches the search</p>
+    {% endif %}
+
+    {% for task in query_tasks  %}
+    <li>{{task.detail}}</li>
+    {% endfor %}
+
+</ul>
+
+{% endblock body %}

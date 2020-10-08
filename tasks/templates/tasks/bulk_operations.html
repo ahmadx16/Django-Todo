@@ -1,0 +1,60 @@
+{% extends 'tasks/base.html' %}
+
+{% block body %}
+
+
+<div class="text-center">
+    {% for message in messages %}
+    <span class="text text-danger">
+        {{message}}
+    </span>
+    {% endfor %}
+</div>
+<div class="container-fluid" style="margin:20px;">
+    <div class="row">
+        <div class="col-sm">
+            <h3>Bulk Update</h3>
+            <form action="{% url 'tasks:bulk-update' %}" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <ul>
+                    {% for task in all_tasks  %}
+                    <li>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="hidden" name="task_id" value="{{task.id}}">
+                                <input class="li-input" type="text" name="task_detail" value="{{task.detail}}">
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <input class="btn btn-info" type="submit" value="Bulk Update">
+            </form>
+        </div>
+        <div class="col-sm">
+            <h3>Bulk Create</h3>
+            <p>Create three tasks in bulk</p>
+            <form action="{% url 'tasks:bulk-add'%}" method="post">
+                {% csrf_token %}
+
+                {% with ''|center:add_task_count as range %}
+                {% for _ in range %}
+                <li>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input class="li-input" type="text" name="task_detail">
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+                {% endwith %}
+
+                <br> <br>
+                <input type="submit" class="btn btn-info" value="Bulk Create">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock body %}
