@@ -10,6 +10,12 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import CustomUserManager
 
 
+REGION_CHOICES = [
+    ("UTC", "UTC"),
+    ("PST", "PST")
+]
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=120)
@@ -33,6 +39,18 @@ class Profile(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+
+class DateTime(models.Model):
+    datetime = models.DateTimeField()
+    region = models.CharField(max_length=3, choices=REGION_CHOICES, default='PST')
+
+    def __str__(self):
+        return str(self.datetime.date()) + ' - ' + str(self.datetime.time())
+
+
+class ConvertDateTo(models.Model):
+    convert_to = models.CharField(max_length=10, choices=REGION_CHOICES, default='PST')
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

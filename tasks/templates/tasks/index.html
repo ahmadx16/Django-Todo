@@ -55,8 +55,8 @@
                             title="Toggle Task Status">
                             <i class="fa fa-square-o" aria-hidden="true"></i>
                         </button>
+                        {% endif %}
                     </form>
-                    {% endif %}
 
                     <a href="{% url 'tasks:update-form' task.id %}" class="btn btn-outline-info" data-toggle="tooltip"
                         data-placement="top" title="Edit Task">
