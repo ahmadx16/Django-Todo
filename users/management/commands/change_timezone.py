@@ -1,7 +1,7 @@
+from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
-from datetime import timedelta
 
 from users.models import DateTime, ConvertDateTo
 
@@ -11,20 +11,20 @@ User = get_user_model()
 class Command(BaseCommand):
     help = 'Changes timezone of DataTime model'
 
-    def get_swap_region(self, region):
+    def get_swap_timezone(self, region):
         return "PST" if region == "UTC" else "UTC"
 
     def set_correct_region(self):
-        """ Sets appropriate region to convert to"""
-        convert_obj = ConvertDateTo.objects.latest('id')
-        datetimes = DateTime.objects.filter(region=self.get_swap_region(convert_obj.convert_to))
-        
+        """ Sets appropriate region to convert"""
+        convert_date_obj = ConvertDateTo.objects.latest('id')
+        datetimes = DateTime.objects.filter(region=self.get_swap_timezone(convert_date_obj.convert_to))
+
         # changes convert_to if all dates already converted
         if not datetimes.count():
-            convert_obj.convert_to = self.get_swap_region(convert_obj.convert_to)
-            convert_obj.save()
+            convert_date_obj.convert_to = self.get_swap_timezone(convert_date_obj.convert_to)
+            convert_date_obj.save()
 
-        return convert_obj.convert_to
+        return convert_date_obj.convert_to
 
     def convert_time(self, convert_to, date):
         """ Converts to PST by adding 5 hours when, subtracts in case of UTC"""
@@ -36,7 +36,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         convert_to = self.set_correct_region()
-        datetimes = DateTime.objects.filter(region=self.get_swap_region(convert_to))
+        datetimes = DateTime.objects.filter(region=self.get_swap_timezone(convert_to))
 
         # convert 10 dates
         for date in datetimes[:10]:
