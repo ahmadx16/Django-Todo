@@ -55,3 +55,15 @@ python manage.py runserver
 ```
 
 This command will start the application server at 127.0.0.1:8000
+
+### Management Commands
+Following django management command will add 100 PST datetimes in a table.
+```shell
+python manage.py add_datetimes
+```
+
+To run the cron job write `crontab -e` in terminal which will open file where you can you cron jobs. Add following line to the file, make sure to change `path-to-virtualenv` and `path-to-project-root` to your virtualenv path and project path respectively. 
+```shell
+*/5 * * * * /path-to-virtualenv/bin/python /path-to-project-root/manage.py change_timezone
+```
+This will change the timezone of 10 dates after every 5 minuites into the database.

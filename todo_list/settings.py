@@ -40,7 +40,6 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'crispy_forms',
-    'django_crontab',
 
     # local apps
     'tasks.apps.TasksConfig',
@@ -125,7 +124,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
