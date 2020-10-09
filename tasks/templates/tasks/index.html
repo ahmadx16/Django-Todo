@@ -18,10 +18,10 @@
         {{message}}
     </span>
     {% endfor %}
-    <form action="{% url 'tasks:task-view'%}" method="post">
+    <form action="{% url 'tasks:task-view'%}" method="POST">
         {% csrf_token %}
         <div class="input-group">
-            <input type="hidden" name="method" value="post">
+            <input type="hidden" name="method" value="POST">
             <input type="text" class="add-item" name="task_detail" placeholder="What do you need to do today?">
             <input type="submit" value="Add Task" class="btn btn-default btn-add">
         </div>
@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="col-md-8">
                     {% if edit_task == task.id %}
-                    <form action="{% url 'tasks:task-view' %}" method="post" style="display: inline-block;">
+                    <form action="{% url 'tasks:task-view' %}" method="POST" style="display: inline-block;">
                         {% csrf_token %}
                         <input type="hidden" name="method" value="PUT">
                         <input type="hidden" name="task_id" value="{{task.id}}">
@@ -42,7 +42,7 @@
                         <input class="btn btn-info btn-update" type="submit" value="update">
                     </form>
                     {% else %}
-                    <form action="{% url 'tasks:toggle-task-complete'%}" method="post" style="display: inline-block;">
+                    <form action="{% url 'tasks:toggle-task-complete'%}" method="POST" style="display: inline-block;">
                         {% csrf_token %}
                         <input type="hidden" name="task_id" value="{{task.id}}">
                         {% if task.is_complete %}
@@ -68,7 +68,7 @@
                 </div>
                 <div class="col-md-4">
                     <!-- Delete task form -->
-                    <form action="{% url 'tasks:task-view' %}" method="post" style="display: inline-block;">
+                    <form action="{% url 'tasks:task-view' %}" method="POST" style="display: inline-block;">
                         {% csrf_token %}
                         <input type="hidden" name="method" value="DELETE">
                         <input type="hidden" name="task_id" value="{{task.id}}">
